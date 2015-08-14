@@ -13,7 +13,7 @@ module.exports = function () {
     var elasticsearch = require('elasticsearch');
 
     var client = new elasticsearch.Client({
-        host: '54.210.133.149:9200',
+        host: '127.0.0.1:9200',
         log: 'trace'
     });
 
