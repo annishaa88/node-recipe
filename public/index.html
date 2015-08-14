@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+
+<head lang="en">
+    <script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
+    <script src="javascripts/recpCtrl.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="stylesheets/style.css" type="text/css" />
+    <meta charset="UTF-8">
+    <title></title>
+
+    <script>
+        $(document).ready(function () {
+            init();
+        });
+
+
+    </script>
+</head>
+<body>
+
+<header>
+    <div class="title">Recipe Recommendation</div><br>
+    <div class="search-field">
+
+        <form method="post" id="searchForm" name="searchForm">
+            <input type="search" id="searchInput" required="required"/>
+            <input type="submit" value="Search"/>
+        </form>
+
+    </div>
+
+</header>
+
+<nav>
+    <div id="response"></div>
+</nav>
+
+<section>
+    <div>
+        <iframe id="recp-site" src="http://allrecipes.com/"></iframe>
+    </div>
+</section>
+
+<footer>
+     <pre id="response_err">
+        </pre>
+</footer>
+
+</body>
+</html>
