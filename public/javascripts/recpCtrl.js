@@ -2,14 +2,17 @@
  * Created by Anna on 8/8/2015.
  */
 function init(){
+    $(".nav-side").hide();
     handleSearch();
 }
 
 function handleSearch(){
     $("#searchForm").submit(function (event) {
 
-        $("#response").empty();
-        $("#response_err").empty();
+        //init search
+        $(".nav-details").empty();
+        $(".nav-rec").hide();
+        $(".nav-search").show();
 
         var searchValue = $("#searchInput").val();
 
@@ -35,22 +38,72 @@ function handleSearch(){
 }
 
 function handleSearchResults(searchResults){
-    $("#response").append("<ul>");
+    $("#response-search").append("<ul>");
     searchResults.forEach(function (resp1) {
 
-        var name = resp1._source.name;
+        var recipeId = resp1._id;
         var url = resp1._source.url;
-        $("#response").append('<li><a href="#" src="'+url+'">'+name+'</a></li>');
+        var name = resp1._source.name;
+
+        var recpNode = $('<li><a href="#">'+name+'</a></li>');
+        recpNode.data({src: url, recipeId : recipeId });
+        $("#response-search").append(recpNode);
+
     });
-    $("#response").append("</ul>");
+    $("#response-search").append("</ul>");
     addSearchResultsEvents();
 }
 
 function addSearchResultsEvents(){
-    $("nav a").click(function(event){
-        var url = $(this).attr("src");
+    $("nav li").click(function(event){
+        var url = $(this).data("src");
+        var recipeId = $(this).data("recipeId");
 
         $("#recp-site").attr("src", url);
+
+        addRecommendations(recipeId)
         return false;
     });
+}
+
+function addRecommendations(recipeId) {
+
+    $.ajax({
+        url: "/recpdb/findRecipeRecommendation",
+        data: {
+            recipeId: recipeId
+        }
+    }).done(function (resp) {
+        console.log(resp);
+
+        if (resp && resp.ok) {
+            handleReccomendationResults(resp.data);
+        } else {
+            $("#response_err").html(resp.error);
+        }
+
+    });
+}
+
+function handleReccomendationResults(searchResults) {
+
+    //init widgets
+    $(".nav-details").empty();
+    $(".nav-rec").show();
+    $(".nav-search").hide();
+
+    $("#response-rec").append("<ul>");
+    searchResults.forEach(function (resp1) {
+
+        var name = resp1.name.S;
+        var url = resp1.url.S;
+        var recipeId = resp1.recipeId.S;
+
+        var recpNode = $('<li><a href="#">'+name+'</a></li>');
+        recpNode.data({src: url, recipeId : recipeId });
+        $("#response-rec").append(recpNode);
+    });
+    $("#response-rec").append("</ul>");
+
+    addSearchResultsEvents();
 }
