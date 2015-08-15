@@ -29,7 +29,7 @@ module.exports = function () {
         var recpBulkIds = {};
         return new Promise(function (fulfill, reject) {
 
-            if (typeof unprocessedItemsBulk !== "undefined"){
+            if (typeof unprocessedItemsBulk !== "undefined") {
 
                 var recpBulkChunks = unprocessedItemsBulk.chunk(25);
                 console.log('number of unprocessed recp:', recpBulk.length);
@@ -53,15 +53,15 @@ module.exports = function () {
                             var elemObj = JSON.parse(elem);
 
                             var url = elemObj.url;
-                            if (url.indexOf("?") > -1) {
-                                url = url.substr(0, url.indexOf("?"));
-                                elemObj.url = url;
-                            }
+                            /*if (url.indexOf("?") > -1) {
+                             url = url.substr(0, url.indexOf("?"));
+                             elemObj.url = url;
+                             }*/
 
                             var recipeId = url.hashCode();
 
                             //check cache, do we have this url?
-                            if (typeof recpBulkIds[recipeId] !== "undefined"){
+                            if (typeof recpBulkIds[recipeId] !== "undefined") {
                                 return;
                             }
                             recpBulkIds[recipeId] = url;
@@ -70,7 +70,7 @@ module.exports = function () {
                                 "PutRequest": {
                                     "Item": {
                                         "recipeId": {
-                                            "S": ''+recipeId
+                                            "S": '' + recipeId
                                         },
                                         "url": {
                                             "S": elemObj.url
@@ -118,20 +118,20 @@ module.exports = function () {
                 //console.log(data);
 
                 var unprocessedItemsBulk = [];
-                data.forEach(function(item){
+                data.forEach(function (item) {
 
-                    if ( typeof item.UnprocessedItems.recipe !== "undefined"){
+                    if (typeof item.UnprocessedItems.recipe !== "undefined") {
                         unprocessedItemsBulk = unprocessedItemsBulk.concat(item.UnprocessedItems.recipe);
                     }
                 });
 
                 //console.log(unprocessedItems);
                 console.log("unprocessedItems: " + unprocessedItemsBulk.length);
-                if (unprocessedItemsBulk.length == 0){
+                if (unprocessedItemsBulk.length == 0) {
                     return data;
                 }
 
-               return insertRecpToDB(unprocessedItemsBulk)
+                return insertRecpToDB(unprocessedItemsBulk)
 
             }).catch(function (err) {
                 console.error(err);
@@ -220,15 +220,38 @@ module.exports = function () {
         }).then(function (data) {
             if (data.length === 0)
                 return data;
-            return data.Responses[_recpTabl];
-        });;
+
+            //test for duplicate url
+            var recommendations = data.Responses[_recpTabl];
+            var recommendationsNoDup = [];
+            var recUrlMap = {};
+
+            recommendations.forEach(function (resp1) {
+                var url = resp1.url.S;
+                var name = resp1.name.S;
+                if (url.indexOf("?") > -1) {
+                    url = url.substr(0, url.indexOf("?"));
+                }
+
+                //check cache, do we have this url?
+                if (typeof recUrlMap[url] !== "undefined") {
+                    return;
+                }
+                recUrlMap[url] = name;
+                recommendationsNoDup.push(resp1);
+
+            });
+
+            return recommendationsNoDup;
+
+        });
     }
 
     return {
         findRecipe: findRecipe,
-        findRecipeRecommendation : findRecipeRecommendation,
+        findRecipeRecommendation: findRecipeRecommendation,
         insertRecpToDB: insertRecpToDB,
-        doBatchWriteItem : doBatchWriteItem
+        doBatchWriteItem: doBatchWriteItem
     };
 }
 ;
