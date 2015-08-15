@@ -166,7 +166,8 @@ module.exports = function () {
 
     return {
         query: queryDB,
-        insertRecpToDB: insertRecpToDB
+        insertRecpToDB: insertRecpToDB,
+        doBatchWriteItem : doBatchWriteItem
     };
 }
 ;
