@@ -1,5 +1,12 @@
 /**
  * Created by Anna on 7/25/2015.
+ *
+ * 1. crawle http://allrecipes.com/
+ * 2. using cheerio scrape each page:
+ *    name, numReviews, rating,  mainCategory,
+ *    subCategory, subCategoryCollection, url, prepMins,
+ *    cookMins , totalMins, ingredients
+ * 3. save each 500 recipes to separate file
  */
 module.exports = function () {
 
@@ -11,7 +18,7 @@ module.exports = function () {
     var Crawler = require("simplecrawler");
 
     var recipies = [];
-    var chunk = 99;
+    var chunk = 1;
     var _dirname = './output/';
     var crawler;
 
@@ -23,8 +30,7 @@ module.exports = function () {
             return parsedURL.path.match(/\/recipe\/.*detail.aspx/i);
         });
 
-        defrost();
-
+        //defrost();
 
         crawler.on("fetchcomplete",function(queueItem, responseBuffer , response){
             var html = responseBuffer.toString();

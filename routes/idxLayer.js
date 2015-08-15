@@ -1,5 +1,11 @@
 /**
  * Created by Anna on 8/7/2015.
+ *
+ * index the recipes at elastic search
+ * - index: index recipes from crawle output to elasticsearch (all fields)
+ * - query: preform multi search on the following fields:
+ *   "name", "mainCategory", "subCategory" , "subCategoryCollection", "ingredients"
+ *
  */
 
 module.exports = function () {
@@ -13,7 +19,7 @@ module.exports = function () {
     var elasticsearch = require('elasticsearch');
 
     var client = new elasticsearch.Client({
-        host: '52.21.52.235:9200',
+        host: 'elastic_server:9200',
         log: 'trace'
     });
 

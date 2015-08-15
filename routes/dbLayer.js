@@ -1,5 +1,10 @@
 /**
  * Created by Anna on 6/6/2015.
+ *
+ * database layer:
+ * - insertRecpToDB: insert recipes from crawle output to dynamodb: id, name, url
+ * - findRecipeRecommendation: find recipe recommendation by recipeId
+ * - findRecipe: find recipe by recipeId
  */
 
 module.exports = function () {

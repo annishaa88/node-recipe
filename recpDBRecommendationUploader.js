@@ -1,5 +1,7 @@
 /**
  * Created by eladcohen on 8/6/15.
+ *
+ * upload mahout recommendations results to dynamodb
  */
 
 var Promise = require('bluebird');
