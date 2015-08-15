@@ -8,7 +8,7 @@ module.exports = function () {
     var fs = require('fs');
     var dir = require('node-dir');
 
-    var _dirname = './output/';
+    var _dirname = '../output/';
 
     var elasticsearch = require('elasticsearch');
 

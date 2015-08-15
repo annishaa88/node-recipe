@@ -14,7 +14,8 @@ module.exports = function () {
 
     var dir = require('node-dir');
     var _dirname = './output/';
-    var _recpTabl = 'recipe';
+    var _recpTabl = 'recipe'; //recipeId (String), recommendationSet (StringSet)
+    var _recpRecTabl = 'recipe_recommendation'; //recipeId (String), url (String), name (String)
 
 
     function insertRecpToDB(unprocessedItemsBulk) {
