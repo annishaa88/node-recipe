@@ -141,7 +141,7 @@ module.exports = function () {
         return dynamodb.batchWriteItemAsync(params);
     }
 
-    function queryDB(recipeId) {
+    function findRecipe(recipeId) {
         var params = {
             TableName: _recpTabl,
             KeyConditions: {
@@ -164,8 +164,64 @@ module.exports = function () {
 
     }
 
+    function findRecipeRecommendation(recipeId) {
+        var params = {
+            TableName: _recpRecTabl,
+            KeyConditions: {
+                "recipeId": {
+                    "AttributeValueList": [
+                        {
+                            "S": recipeId
+                        }
+                    ],
+                    "ComparisonOperator": "EQ"
+                }
+            }
+        };
+
+        return dynamodb.queryAsync(params).then(function (data) {
+
+            if (data.Items.length === 0)
+                return [];
+
+            var recpRec = data.Items[0];
+            var recSet = recpRec.recommendationSet.SS;
+            var keys = [];
+
+            recSet.forEach(function (item) {
+                keys.push({recipeId: {S: item}});
+            });
+
+
+            var paramsBatch = {
+                RequestItems: {}
+            };
+
+            paramsBatch.RequestItems[_recpTabl] = {
+                Keys: keys,
+                AttributesToGet: [
+                    'recipeId', 'url', 'name'
+                ]
+            }
+
+            return paramsBatch;
+        }).then(function (paramsBatch) {
+            if (paramsBatch.length == 0) {
+                return [];
+            }
+
+            return dynamodb.batchGetItemAsync(paramsBatch);
+
+        }).then(function (data) {
+            if (data.length === 0)
+                return data;
+            return data.Responses[_recpTabl];
+        });;
+    }
+
     return {
-        query: queryDB,
+        findRecipe: findRecipe,
+        findRecipeRecommendation : findRecipeRecommendation,
         insertRecpToDB: insertRecpToDB,
         doBatchWriteItem : doBatchWriteItem
     };

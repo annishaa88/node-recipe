@@ -38,13 +38,32 @@ footer {
   padding:5px;
 }
 
-ul {
+ul,li {
   list-style-type: none;
   margin: 0;
   padding: 0;
 }
+li {margin-bottom: 10px;}
 
-nav a { color: #151b36; }
+nav a { color: #0091CE;  text-decoration: none; }
 nav a:hover, nav a:active {
-  color: #2f5799;
+  text-decoration: underline;
+}
+
+nav .nav-top {
+  padding: 10px 10px 10px 22px;
+  background: #b9b9b9;
+  font-weight: bold;
+  line-height: 20px;
+  color: white;
+}
+
+nav .nav-details{
+  padding: 19px 7px 0;
+  color: #8e8e8e;
+  border: solid 1px #b9b9b9;
+  border-top: 0;
+  background: #f4f4f4;
+  line-height: 18px;
+  font-size: 14px;
 }
